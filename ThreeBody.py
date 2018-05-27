@@ -4,9 +4,11 @@ from pygame.locals import *
 from vector import *
 SCREENX,SCREENY=500,500
 DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
-D=60
-G=0.01
+D=30
+G=100
 DT=0.1
+KEY_MAP={K_DOWN:V3(0,0,1),
+         K_UP:V3(0,0,-1),}
 class Star:
     def __init__(self,m,v,p):
         self.m=m
@@ -41,6 +43,9 @@ class StarGroup:
             if star.p.z>0:
                 pygame.draw.circle(DISPLAY,(0,0,255),screen_pos,int(D/star.p.z/2))
         pygame.display.update()
+    def add(self,vec):
+        for star in self.stars:
+            star.p+=vec
     def __str__(self):
         info='='*20+'\n'
         for star in self.stars:
@@ -54,9 +59,9 @@ def get_screen_pos(p):
     y+=SCREENY//2
     return (x,y)
 def main():
-    global D
+    global D,STARS
     while True:
-        time.sleep(0.05)
+        time.sleep(0.1)
         STARS.proceed()
         STARS.draw()
         if random()<0.2:
@@ -66,18 +71,16 @@ def main():
                 pygame.quit()
                 os._exit(0)
             if event.type==KEYDOWN:
-                if event.key==K_UP:
-                    for i in (s1,s2,s3):
-                        i.p.z-=1
-                elif event.key==K_DOWN:
-                    for i in (s1,s2,s3):
-                        i.p.z+=1
+                vec=KEY_MAP.get(event.key,None)
+                if vec!=None:
+                    STARS.add(vec)
+                    #print('done')
                 elif event.key==K_RETURN:
                     return
 while True:
-    s1=Star(1,ranpro()/5,ranpro()*10+V3(0,0,10))
-    s2=Star(1,ranpro()/5,ranpro()*10+V3(0,0,10))
-    s3=Star(1,V3(0,0,0)-s1.m*s1.v-s2.m*s2.v,V3(0,0,30)-s1.m*s1.p-s2.m*s2.p)
+    s1=Star(1,ranpro()/10,ranpro()*5+V3(0,0,5))
+    s2=Star(1,ranpro()/10,ranpro()*5+V3(0,0,5))
+    s3=Star(1,V3(0,0,0)-s1.m*s1.v-s2.m*s2.v,V3(0,0,20)-s1.m*s1.p-s2.m*s2.p)
     STARS=StarGroup((s1,s2,s3),DISPLAY)
     print('here')
     main()
