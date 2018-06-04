@@ -9,13 +9,16 @@ G=100
 DT=0.1
 KEY_MAP={K_DOWN:V3(0,0,1),
          K_UP:V3(0,0,-1),}
+gravity_dict={0:(1,2),
+                  1:(0,2),
+                  2:(0,1)}
 class Star:
     def __init__(self,m,v,p):
         self.m=m
         self.v=v
-        self.p=p
+##        self.p=p
         self._p=[p,p+v*DT]
-        a=[self.cacl_a]
+        a=[self.calc_a]
         return
     @property
     def p(self):
@@ -23,13 +26,13 @@ class Star:
     def calc_a(self,s1,s2):
         self.a=(s1.m*(s1.p-self.p)/(s1.p-self.p).dis**3+\
                  s2.m*(s2.p-self.p)/(s2.p-self.p).dis**3)*G
-    def calc_p(self):
+        return self.a
+    def proceed(self,s1,s2):
         self._p.append(2*self.p-self._p.pop(0)+self.a*DT**2)
         #print(a.x,a.y,a.z)
-    def calc_v(self):
-        self.v+=(a*DT
+        self.v+=(self.a+self.calc_a(s1,s2))/2*DT
         #print(self.p.x,self.p.y,self.p.z)
-        self.p+=self.v*DT
+        #self.p+=self.v*DT
         #print(self.p.x,self.p.y,self.p.z)
         #print('_'*20)
     def __str__(self):
@@ -37,6 +40,7 @@ class Star:
                %(self.p.x,self.p.y,self.p.z,self.v.x,self.v.y,self.v.z)\
                +"screen_position:(%d,%d)"%get_screen_pos(self.p))
 class StarGroup:
+    
     def __init__(self,stars,dis):
         self.stars=stars
         self.display=dis
@@ -46,17 +50,25 @@ class StarGroup:
     def calc_rc(self):
         r=v=V3(0,0,0)
         E=0
-        for star in self.stars:
-            r+=star.p
-            v+=star.v
-            E+=1/2*star.m*star.v.dis**2
-        for i,j in ((0,1),(1,2),(0,2)):
-            E-=G*self.stars[i].m*self.stars[j].m/(self.stars[i].p-self.stars[j].p).dis
+        for i,j in gravity_dict.items():
+            E+=1/2*self.stars[i].m*self.stars[i].v.dis**2
+            E-=G*self.stars[j[0]].m*self.stars[j[1]].m\
+                /(self.stars[j[0]].p-self.stars[j[1]].p).dis
+            r+=self.stars[i].p
+            v+=self.stars[i].v
+##        for star in self.stars:
+##            r+=star.p
+##            v+=star.v
+##            E+=1/2*star.m*star.v.dis**2
+##        for i,j in ((0,1),(1,2),(0,2)):
+##            E-=G*self.stars[i].m*self.stars[j].m/(self.stars[i].p-self.stars[j].p).dis
         return r/self.M,v/self.M,E
     def proceed(self):
-        self.stars[0].setv(self.stars[1],self.stars[2])
-        self.stars[1].setv(self.stars[0],self.stars[2])
-        self.stars[2].setv(self.stars[1],self.stars[0])
+        for i,j in gravity_dict.items():
+            self.stars[i].calc_a(self.stars[j[0]],self.stars[j[1]])
+        for i,j in gravity_dict.items():
+            self.stars[i].proceed(self.stars[j[0]],self.stars[j[1]])
+
     def draw(self):
         DISPLAY.fill((0,0,0))
         for star in self.stars:
