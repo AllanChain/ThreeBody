@@ -6,7 +6,9 @@ SCREENX,SCREENY=500,500
 DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
 D=30
 G=100
-DT=0.1
+DT=0.01
+WAIT=0.1
+PRINT_FEQ=0.2
 KEY_MAP={K_DOWN:V3(0,0,1),
          K_UP:V3(0,0,-1),}
 gravity_dict={0:(1,2),
@@ -72,9 +74,10 @@ class StarGroup:
     def draw(self):
         DISPLAY.fill((0,0,0))
         for star in self.stars:
-            screen_pos=get_screen_pos(star.p)   
+            screen_pos=get_screen_pos(star.p)
             if star.p.z>0:
-                pygame.draw.circle(DISPLAY,(0,0,255),screen_pos,int(D/star.p.z/2))
+                r=max(int(D/star.p.z/2),3)
+                pygame.draw.circle(DISPLAY,(0,0,255),screen_pos,r)
         pygame.display.update()
     def add(self,vec):
         for star in self.stars:
@@ -104,10 +107,10 @@ def main():
     global D,STARS
     STARS=random_star()
     while True:
-        time.sleep(0.1)
+        time.sleep(WAIT)
         STARS.proceed()
         STARS.draw()
-        if random()<0.8:
+        if random()<PRINT_FEQ:
             print(STARS)
         for event in pygame.event.get():
             if event.type==QUIT:
