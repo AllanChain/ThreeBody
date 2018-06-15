@@ -2,15 +2,13 @@ import pygame,time,os
 from random import random
 from pygame.locals import *
 from vector import *
-SCREENX,SCREENY=500,500
-DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
+
+DISPLAY=None
 D=30
 G=100
 DT=0.01
 WAIT=0.1
-PRINT_FEQ=0.2
-KEY_MAP={K_DOWN:V3(0,0,1),
-         K_UP:V3(0,0,-1),}
+SCREENX,SCREENY=500,500
 gravity_dict={0:(1,2),
                   1:(0,2),
                   2:(0,1)}
@@ -43,7 +41,7 @@ class Star:
                +"screen_position:(%d,%d)"%get_screen_pos(self.p))
 class StarGroup:
     
-    def __init__(self,stars,dis):
+    def __init__(self,stars,dis=None):
         self.stars=stars
         self.display=dis
         self.M=0
@@ -103,8 +101,13 @@ def get_screen_pos(p):
     x+=SCREENX//2
     y+=SCREENY//2
     return (x,y)
-def main():
+def main_in_pygame():
     global D,STARS
+    
+    DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
+    PRINT_FEQ=0.2
+    KEY_MAP={K_DOWN:V3(0,0,1),
+         K_UP:V3(0,0,-1),}
     STARS=random_star()
     while True:
         time.sleep(WAIT)
@@ -124,4 +127,20 @@ def main():
                 elif event.key==K_RETURN:
                     print('*'*10+'NEW'+'*'*10)
                     STARS=random_star()
-main()
+def main_in_console():
+    global D,STARS
+    WAIT_C=0.1
+    STARS=random_star()
+    while True:
+        try:
+            time.sleep(WAIT_C)
+            STARS.proceed()
+            print(STARS)
+        except KeyboardInterrupt:
+            if input('Again?'):
+                print('*'*10+'NEW'+'*'*10)
+                STARS=random_star()
+            else:
+                return
+            
+main_in_console()
