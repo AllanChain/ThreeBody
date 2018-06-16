@@ -96,15 +96,14 @@ def random_star():
     return StarGroup((s1,s2,s3),DISPLAY)
 
 def get_screen_pos(p):
-    x,y=p.getv2(D)
-    x+=SCREENX//2
-    y+=SCREENY//2
-    return (x,y)
+    x=p.x*D/p.z+SCREENX//2
+    y=p.y*D/p.z+SCREENY//2
+    return (int(x),int(y))
 def main_in_pygame():
     global D,STARS,DISPLAY
     #按下相应键的坐标增减
     KEY_MAP={K_DOWN:V3(0,0,1),
-                K_UP:V3(0,0,-1),}
+            K_UP:V3(0,0,-1),}
     PRINT_FEQ=0.2 #输出信息的频率
     DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
     STARS=random_star()

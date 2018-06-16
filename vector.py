@@ -46,6 +46,3 @@ class V3:
         self.y/=self.dis
         self.z/=self.dis
         self.dis=self.square=1
-    def getv2(self,d):
-        return (int(self.x*d/self.z),int(self.y*d/self.z))
-
