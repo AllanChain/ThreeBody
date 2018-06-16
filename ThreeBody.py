@@ -1,18 +1,28 @@
-import pygame,time,os
+import time,os
 from random import random
-from pygame.locals import *
 from vector import *
+try:
+    import pygame
+    from pygame.locals import *
+    WINDOW=True
+except ImportError:
+    WIN=False
 
 DISPLAY=None
 SCREENX,SCREENY=500,500
 D=30 #视距
 G=100 #引力常量
 DT=0.01 #每次循环三体的时间差Δt
-WAIT=0.1 #每次循环现实中经历时间
+WAIT=0.05 #每次pygame循环现实中经历时间
+WAIT_C=0.1 #每次命令行循环现实中经历时间
+#按下相应键的坐标增减
+KEY_MAP={K_DOWN:V3(0,0,1),
+            K_UP:V3(0,0,-1),}
+PRINT_FEQ=0.2 #输出信息的频率
 #储存相互作用方式的字典
 gravity_dict={0:(1,2),
-                  1:(0,2),
-                  2:(0,1)}
+                1:(0,2),
+                2:(0,1)}
 class Star:
     def __init__(self,m,v,p):
         self.m=m
@@ -105,13 +115,8 @@ def get_screen_pos(p):
     y+=SCREENY//2
     return (x,y)
 def main_in_pygame():
-    global D,STARS
-    
+    global D,STARS,DISPLAY
     DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
-    #按下相应键的坐标增减
-    KEY_MAP={K_DOWN:V3(0,0,1),
-            K_UP:V3(0,0,-1),}
-    PRINT_FEQ=0.2 #输出信息的频率
     STARS=random_star()
     while True:
         time.sleep(WAIT)
@@ -133,7 +138,7 @@ def main_in_pygame():
                     STARS=random_star()
 def main_in_console():
     global D,STARS
-    WAIT_C=0.1
+    
     STARS=random_star()
     while True:
         try:
@@ -146,5 +151,7 @@ def main_in_console():
                 STARS=random_star()
             else:
                 return
-            
-main_in_console()
+if WINDOW==False:           
+    main_in_console()
+else:
+    main_in_pygame()
