@@ -15,10 +15,6 @@ G=100 #引力常量
 DT=0.01 #每次循环三体的时间差Δt
 WAIT=0.05 #每次pygame循环现实中经历时间
 WAIT_C=0.1 #每次命令行循环现实中经历时间
-#按下相应键的坐标增减
-KEY_MAP={K_DOWN:V3(0,0,1),
-            K_UP:V3(0,0,-1),}
-PRINT_FEQ=0.2 #输出信息的频率
 #储存相互作用方式的字典
 gravity_dict={0:(1,2),
                 1:(0,2),
@@ -105,6 +101,10 @@ def get_screen_pos(p):
     return (x,y)
 def main_in_pygame():
     global D,STARS,DISPLAY
+    #按下相应键的坐标增减
+    KEY_MAP={K_DOWN:V3(0,0,1),
+                K_UP:V3(0,0,-1),}
+    PRINT_FEQ=0.2 #输出信息的频率
     DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
     STARS=random_star()
     while True:
