@@ -4,11 +4,12 @@ from pygame.locals import *
 from vector import *
 
 DISPLAY=None
-D=30
-G=100
-DT=0.01
-WAIT=0.1
 SCREENX,SCREENY=500,500
+D=30 #视距
+G=100 #引力常量
+DT=0.01 #每次循环三体的时间差Δt
+WAIT=0.1 #每次循环现实中经历时间
+#储存相互作用方式的字典
 gravity_dict={0:(1,2),
                   1:(0,2),
                   2:(0,1)}
@@ -16,8 +17,10 @@ class Star:
     def __init__(self,m,v,p):
         self.m=m
         self.v=v
-##        self.p=p
+        #计算t=0,Δt的位置
         self._p=[p,p+v*DT]
+
+        #计算t=0时刻的加速度
         a=[self.calc_a]
         return
     @property
@@ -105,9 +108,10 @@ def main_in_pygame():
     global D,STARS
     
     DISPLAY=pygame.display.set_mode((SCREENX,SCREENY))
-    PRINT_FEQ=0.2
+    #按下相应键的坐标增减
     KEY_MAP={K_DOWN:V3(0,0,1),
-         K_UP:V3(0,0,-1),}
+            K_UP:V3(0,0,-1),}
+    PRINT_FEQ=0.2 #输出信息的频率
     STARS=random_star()
     while True:
         time.sleep(WAIT)
