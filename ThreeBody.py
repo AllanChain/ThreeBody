@@ -6,7 +6,7 @@ try:
     from pygame.locals import *
     WINDOW=True
 except ImportError:
-    WIN=False
+    WINDOW=False
 
 DISPLAY=None
 SCREENX,SCREENY=500,500
@@ -42,12 +42,7 @@ class Star:
         return self.a
     def proceed(self,s1,s2):
         self._p.append(2*self.p-self._p.pop(0)+self.a*DT**2)
-        #print(a.x,a.y,a.z)
         self.v+=(self.a+self.calc_a(s1,s2))/2*DT
-        #print(self.p.x,self.p.y,self.p.z)
-        #self.p+=self.v*DT
-        #print(self.p.x,self.p.y,self.p.z)
-        #print('_'*20)
     def __str__(self):
         return("position:(%d,%d,%d)\nvelocity:(%d,%d,%d)\n"\
                %(self.p.x,self.p.y,self.p.z,self.v.x,self.v.y,self.v.z)\
@@ -69,12 +64,6 @@ class StarGroup:
                 /(self.stars[j[0]].p-self.stars[j[1]].p).dis
             r+=self.stars[i].p
             v+=self.stars[i].v
-##        for star in self.stars:
-##            r+=star.p
-##            v+=star.v
-##            E+=1/2*star.m*star.v.dis**2
-##        for i,j in ((0,1),(1,2),(0,2)):
-##            E-=G*self.stars[i].m*self.stars[j].m/(self.stars[i].p-self.stars[j].p).dis
         return r/self.M,v/self.M,E
     def proceed(self):
         for i,j in gravity_dict.items():
