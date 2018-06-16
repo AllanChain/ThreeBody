@@ -40,9 +40,10 @@ class Star:
         self._p.append(2*self.p-self._p.pop(0)+self.a*DT**2)
         self.v+=(self.a+self.calc_a(s1,s2))/2*DT
     def __str__(self):
-        return("position:(%d,%d,%d)\nvelocity:(%d,%d,%d)\n"\
-               %(self.p.x,self.p.y,self.p.z,self.v.x,self.v.y,self.v.z)\
-               +"screen_position:(%d,%d)"%get_screen_pos(self.p))
+        return(
+        f'''position:{self.p:.2f}
+velocity:{self.v:.2f}
+screen_position:{get_screen_pos(self.p)}''')
 class StarGroup:
     
     def __init__(self,stars,dis=None):
@@ -83,7 +84,7 @@ class StarGroup:
         for star in self.stars:
             info+=str(star)+'\n'+'-'*20+'\n'
         rc,vc,E=self.calc_rc()
-        info+='rc:(%d,%d,%d),vc:(%d,%d,%d)'%(rc.x,rc.y,rc.z,vc.x,vc.y,vc.z)
+        info+=f'rc:{rc:.0f},vc:{vc:.0f}'
         info+='\nEnergy:'+str(E)
         return info
 def ranpro():
