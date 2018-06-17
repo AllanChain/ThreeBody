@@ -124,8 +124,9 @@ class StarGroup:
 def ranpro():
     return(V3(random()*2-1,random()*2-1,random()*2-1))
 def random_star():
-    s1=Star(1,ranpro()/10,ranpro()*5+V3(0,0,5))
-    s2=Star(1,ranpro()/10,ranpro()*5+V3(0,0,5))
+    VMAX=0.1
+    s1=Star(1,ranpro()*VMAX,ranpro()*5+V3(0,0,5))
+    s2=Star(1,ranpro()*VMAX,ranpro()*5+V3(0,0,5))
     s3=Star(1,V3(0,0,0)-s1.m*s1.v-s2.m*s2.v,V3(0,0,20)-s1.m*s1.p-s2.m*s2.p)
     return StarGroup((s1,s2,s3),DISPLAY)
 
