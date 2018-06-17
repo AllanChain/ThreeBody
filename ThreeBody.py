@@ -75,16 +75,17 @@ class StarGroup:
             self.stars[i].calc_v(self.stars[j[0]],self.stars[j[1]])
     def crash(self,s1,s2):
         print('#'*10+'CRASH')
-        br=s1.p-s2.p
+        r=s2.p-s1.p
+        e=1
         bv=s1.v-s2.v
-        if bv.dot(br)>0:
+        if bv.dot(r)>0:
             print(' '*5,bv)
             v1,v2=s1.v,s2.v
             m1,m2=s1.m,s2.m
-            v1n=(v1.dot(r))/r.dis
-            v1t=v1-v1t
-            v2n=(v2.dot(r))/r.dis
-            v2t=v2-v2t
+            v1n=(v1.dot(r)/r.square)*r
+            v1t=v1-v1n
+            v2n=(v2.dot(r)/r.square)*r
+            v2t=v2-v2n
             v1nk=((m1-e*m2)*v1n+(1+e)*m2*v2n)/(m1+m2)
             v2nk=((m2-e*m1)*v2n+(1+e)*m1*v1n)/(m1+m2)
             s1.v=v1nk+v1t
