@@ -91,10 +91,12 @@ class StarGroup:
             v2nk=((m2-e*m1)*v2n+(1+e)*m1*v1n)/(m1+m2)
             s1.v=v1nk+v1t
             s2.v=v2nk+v2t
-            print(' '*5,bv)
-            print(' '*5,s1.v-s2.v)
-            print(' '*5,v1n-v2n)
-            print(' '*5,v1nk-v2nk)
+            print(bv)
+            print(s1.v-s2.v)
+            print(v1n-v2n)
+            print(v1nk-v2nk)
+            print(1/2*m1*v1.square+1/2*m2*v2.square)
+            print(1/2*m1*s1.v.square+1/2*m2*s2.v.square)
     def draw(self):
         DISPLAY.fill((0,0,0))
         for star in self.stars:
