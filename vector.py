@@ -43,6 +43,8 @@ class V3:
         return f'({self.x:{f}},{self.y:{f}},{self.z:{f}})'
     def __str__(self):
         return f'{self:.2f}'
+    def dot(self,vec):
+        return(self.x*vec.x+self.y*vec.y+self.z*vec.z)
     def normalize(self):
         self.x/=self.dis
         self.y/=self.dis
