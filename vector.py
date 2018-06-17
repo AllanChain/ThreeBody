@@ -41,6 +41,8 @@ class V3:
         return V3(self.x/n,self.y/n,self.z/n)
     def __format__(self,f):
         return f'({self.x:{f}},{self.y:{f}},{self.z:{f}})'
+    def __str__(self):
+        return f'{self:.2f}'
     def normalize(self):
         self.x/=self.dis
         self.y/=self.dis

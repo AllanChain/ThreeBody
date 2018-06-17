@@ -12,7 +12,7 @@ DISPLAY=None
 SCREENX,SCREENY=500,500
 D=30 #视距
 G=100 #引力常量
-DT=0.01 #每次循环三体的时间差Δt
+DT=0.001 #每次循环三体的时间差Δt
 WAIT=0.05 #每次pygame循环现实中经历时间
 WAIT_C=0.1 #每次命令行循环现实中经历时间
 #储存相互作用方式的字典
@@ -25,19 +25,21 @@ class Star:
         self.v=v
         #计算t=0,Δt的位置
         self._p=[p,p+v*DT]
-
-        #计算t=0时刻的加速度
-        a=[self.calc_a]
         return
     @property
     def p(self):
         return self._p[1]
     def calc_a(self,s1,s2):
-        self.a=(s1.m*(s1.p-self.p)/(s1.p-self.p).dis**3+\
-                 s2.m*(s2.p-self.p)/(s2.p-self.p).dis**3)*G
+        r1=(s1.p-self.p)
+        r2=(s2.p-self.p)
+        self.a=(s1.m*r1/r1.dis**3+\
+                 s2.m*r2/r2.dis**3)*G
+        if r1.dis<0.5 or r2.dis<0.5:
+            print('#'*10+'CRASH')
         return self.a
-    def proceed(self,s1,s2):
+    def calc_p(self):
         self._p.append(2*self.p-self._p.pop(0)+self.a*DT**2)
+    def calc_v(self,s1,s2):
         self.v+=(self.a+self.calc_a(s1,s2))/2*DT
     def __str__(self):
         return(
@@ -52,11 +54,13 @@ class StarGroup:
         self.M=0
         for star in stars:
             self.M+=star.m
+        for i,j in gravity_dict.items():
+            self.stars[i].calc_a(self.stars[j[0]],self.stars[j[1]])
     def calc_rc(self):
         r=v=V3(0,0,0)
         E=0
         for i,j in gravity_dict.items():
-            E+=1/2*self.stars[i].m*self.stars[i].v.dis**2
+            E+=1/2*self.stars[i].m*self.stars[i].v.square
             E-=G*self.stars[j[0]].m*self.stars[j[1]].m\
                 /(self.stars[j[0]].p-self.stars[j[1]].p).dis
             r+=self.stars[i].p
@@ -64,9 +68,9 @@ class StarGroup:
         return r/self.M,v/self.M,E
     def proceed(self):
         for i,j in gravity_dict.items():
-            self.stars[i].calc_a(self.stars[j[0]],self.stars[j[1]])
+            self.stars[i].calc_p()
         for i,j in gravity_dict.items():
-            self.stars[i].proceed(self.stars[j[0]],self.stars[j[1]])
+            self.stars[i].calc_v(self.stars[j[0]],self.stars[j[1]])
 
     def draw(self):
         DISPLAY.fill((0,0,0))
@@ -86,6 +90,11 @@ class StarGroup:
         rc,vc,E=self.calc_rc()
         info+=f'rc:{rc:.0f},vc:{vc:.0f}'
         info+='\nEnergy:'+str(E)
+        if E>0:
+            for i in self.stars:
+                print(i.a)
+            print(info)
+            raise KeyboardInterrupt
         return info
 def ranpro():
     return(V3(random()*2-1,random()*2-1,random()*2-1))
@@ -127,12 +136,12 @@ def main_in_pygame():
                     STARS=random_star()
 def main_in_console():
     global D,STARS
-    
     STARS=random_star()
     while True:
         try:
             time.sleep(WAIT_C)
-            STARS.proceed()
+            for i in range(10):
+                STARS.proceed()
             print(STARS)
         except KeyboardInterrupt:
             if input('Again?'):
